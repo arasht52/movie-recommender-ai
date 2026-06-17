@@ -1,8 +1,12 @@
-export const getItem = (key, fallbackValue = null) => {
-  try {
-    const value = localStorage.getItem(key);
+const isStorageAvailable = () =>
+  typeof window !== "undefined" && typeof window.localStorage !== "undefined";
 
-    if (!value) return fallbackValue;
+export const getItem = (key, fallbackValue = null) => {
+  if (!isStorageAvailable()) return fallbackValue;
+
+  try {
+    const value = window.localStorage.getItem(key);
+    if (value === null) return fallbackValue;
 
     return JSON.parse(value);
   } catch (error) {
@@ -12,8 +16,10 @@ export const getItem = (key, fallbackValue = null) => {
 };
 
 export const setItem = (key, value) => {
+  if (!isStorageAvailable()) return false;
+
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    window.localStorage.setItem(key, JSON.stringify(value));
     return true;
   } catch (error) {
     console.error("Storage write error:", error);
@@ -22,8 +28,10 @@ export const setItem = (key, value) => {
 };
 
 export const removeItem = (key) => {
+  if (!isStorageAvailable()) return false;
+
   try {
-    localStorage.removeItem(key);
+    window.localStorage.removeItem(key);
     return true;
   } catch (error) {
     console.error("Storage remove error:", error);
@@ -32,8 +40,10 @@ export const removeItem = (key) => {
 };
 
 export const clearStorage = () => {
+  if (!isStorageAvailable()) return false;
+
   try {
-    localStorage.clear();
+    window.localStorage.clear();
     return true;
   } catch (error) {
     console.error("Storage clear error:", error);
